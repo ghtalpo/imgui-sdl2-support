@@ -1,9 +1,9 @@
 [package]
-name = "imgui-sdl2-support"
+name = "imgui-sdl3-support"
 version = "0.13.0"
 edition = "2021"
 authors = ["The imgui-rs Developers"]
-description = "sdl2 support code for the imgui crate"
+description = "sdl3 support code for the imgui crate"
 homepage = "https://github.com/imgui-rs/imgui-sdl2-support"
 repository = "https://github.com/imgui-rs/imgui-sdl2-support"
 documentation = "https://docs.rs/imgui-sdl2-support"
@@ -12,8 +12,9 @@ categories = ["gui"]
 
 [dependencies]
 imgui = { version = "0.12.0", git = "https://github.com/imgui-rs/imgui-rs" }
-sdl2 = "0.37"
+sdl3 = "0.14.5"
 
 [dev-dependencies]
 imgui-glow-renderer = { version = "0.13.0", git = "https://github.com/imgui-rs/imgui-glow-renderer" }
-sdl2 = { version = "0.37", features = ["bundled", "static-link"] }
+sdl3 = { version = "0.14.5", features = [] }
+

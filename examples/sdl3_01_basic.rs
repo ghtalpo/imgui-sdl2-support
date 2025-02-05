@@ -4,7 +4,7 @@ use imgui_glow_renderer::{
     AutoRenderer,
 };
 use imgui_sdl2_support::SdlPlatform;
-use sdl2::{
+use sdl3::{
     event::Event,
     video::{GLProfile, Window},
 };
@@ -12,13 +12,21 @@ use sdl2::{
 // Create a new glow context.
 fn glow_context(window: &Window) -> glow::Context {
     unsafe {
-        glow::Context::from_loader_function(|s| window.subsystem().gl_get_proc_address(s) as _)
+        // glow::Context::from_loader_function(|s| window.subsystem().gl_get_proc_address(s) as _)
+        glow::Context::from_loader_function(|s| {
+            let addr = window.subsystem().gl_get_proc_address(s);
+            if addr.is_some() {
+                addr.unwrap() as _
+            } else {
+                std::ptr::null() as _ // ugly but working
+            }
+        })
     }
 }
 
 fn main() {
     /* initialize SDL and its video subsystem */
-    let sdl = sdl2::init().unwrap();
+    let sdl = sdl3::init().unwrap();
     let video_subsystem = sdl.video().unwrap();
 
     /* hint SDL to initialize an OpenGL 3.3 core profile context */
@@ -30,7 +38,7 @@ fn main() {
     /* create a new window, be sure to call opengl method on the builder when using glow! */
     let window = video_subsystem
         .window("Hello imgui-rs!", 1280, 720)
-        .allow_highdpi()
+        // .allow_highdpi()
         .opengl()
         .position_centered()
         .resizable()

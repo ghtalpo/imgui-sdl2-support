@@ -5,7 +5,7 @@
 use std::time::Instant;
 
 use imgui::{BackendFlags, ConfigFlags, Context, Io, MouseCursor};
-use sdl2::{
+use sdl3::{
     event::Event,
     keyboard::{Mod, Scancode},
     mouse::{Cursor, MouseState, SystemCursor},
@@ -13,7 +13,7 @@ use sdl2::{
     EventPump,
 };
 
-/// SDL2 backend platform state.
+/// sdl3 backend platform state.
 ///
 /// A backend platform handles window/input device events and manages their
 /// state.
@@ -43,7 +43,7 @@ impl SdlPlatform {
         io.backend_flags.insert(BackendFlags::HAS_SET_MOUSE_POS);
 
         imgui.set_platform_name(Some(format!(
-            "imgui-sdl2-support {}",
+            "imgui-sdl3-support {}",
             env!("CARGO_PKG_VERSION")
         )));
 
@@ -139,7 +139,7 @@ impl SdlPlatform {
 
         let mouse_state = MouseState::new(event_pump);
         let window_size = window.size();
-        let window_drawable_size = window.drawable_size();
+        let window_drawable_size = window.size_in_pixels();
 
         // Set display size and scale here, since SDL 2 doesn't have
         // any easy way to get the scale factor, and changes in said
@@ -153,7 +153,7 @@ impl SdlPlatform {
         // Set mouse position if requested by imgui-rs
         if io.want_set_mouse_pos {
             let mouse_util = window.subsystem().sdl().mouse();
-            mouse_util.warp_mouse_in_window(window, io.mouse_pos[0] as i32, io.mouse_pos[1] as i32);
+            mouse_util.warp_mouse_in_window(window, io.mouse_pos[0], io.mouse_pos[1]);
         }
 
         // Update mouse cursor position
@@ -188,11 +188,11 @@ impl SdlPlatform {
 ///
 /// # Example
 /// ```rust,no_run
-/// # let mut event_pump: sdl2::EventPump = unimplemented!();
-/// # let window: sdl2::video::Window = unimplemented!();
+/// # let mut event_pump: sdl3::EventPump = unimplemented!();
+/// # let window: sdl3::video::Window = unimplemented!();
 /// # let mut imgui = imgui::Context::create();
 /// # let mut platform = SdlPlatform::init(&mut imgui);
-/// use imgui_sdl2_support::{SdlPlatform, filter_event};
+/// use imgui_sdl3_support::{SdlPlatform, filter_event};
 /// // Assuming there are multiple windows, we only want to provide the events
 /// // of the window where we are rendering to imgui-rs
 /// for event in event_pump.poll_iter().filter(|event| filter_event(&window, event)) {
@@ -207,23 +207,23 @@ impl SdlPlatform {
     fn handle_mouse_button(
         &mut self,
         io: &mut Io,
-        button: &sdl2::mouse::MouseButton,
+        button: &sdl3::mouse::MouseButton,
         pressed: bool,
     ) {
         match button {
-            sdl2::mouse::MouseButton::Left => {
+            sdl3::mouse::MouseButton::Left => {
                 io.add_mouse_button_event(imgui::MouseButton::Left, pressed)
             }
-            sdl2::mouse::MouseButton::Right => {
+            sdl3::mouse::MouseButton::Right => {
                 io.add_mouse_button_event(imgui::MouseButton::Right, pressed)
             }
-            sdl2::mouse::MouseButton::Middle => {
+            sdl3::mouse::MouseButton::Middle => {
                 io.add_mouse_button_event(imgui::MouseButton::Middle, pressed)
             }
-            sdl2::mouse::MouseButton::X1 => {
+            sdl3::mouse::MouseButton::X1 => {
                 io.add_mouse_button_event(imgui::MouseButton::Extra1, pressed)
             }
-            sdl2::mouse::MouseButton::X2 => {
+            sdl3::mouse::MouseButton::X2 => {
                 io.add_mouse_button_event(imgui::MouseButton::Extra2, pressed)
             }
             _ => {}
@@ -260,16 +260,16 @@ fn handle_key(io: &mut Io, key: &Scancode, pressed: bool) {
         Scancode::X => imgui::Key::X,
         Scancode::Y => imgui::Key::Y,
         Scancode::Z => imgui::Key::Z,
-        Scancode::Num1 => imgui::Key::Keypad1,
-        Scancode::Num2 => imgui::Key::Keypad2,
-        Scancode::Num3 => imgui::Key::Keypad3,
-        Scancode::Num4 => imgui::Key::Keypad4,
-        Scancode::Num5 => imgui::Key::Keypad5,
-        Scancode::Num6 => imgui::Key::Keypad6,
-        Scancode::Num7 => imgui::Key::Keypad7,
-        Scancode::Num8 => imgui::Key::Keypad8,
-        Scancode::Num9 => imgui::Key::Keypad9,
-        Scancode::Num0 => imgui::Key::Keypad0,
+        Scancode::_1 => imgui::Key::Keypad1,
+        Scancode::_2 => imgui::Key::Keypad2,
+        Scancode::_3 => imgui::Key::Keypad3,
+        Scancode::_4 => imgui::Key::Keypad4,
+        Scancode::_5 => imgui::Key::Keypad5,
+        Scancode::_6 => imgui::Key::Keypad6,
+        Scancode::_7 => imgui::Key::Keypad7,
+        Scancode::_8 => imgui::Key::Keypad8,
+        Scancode::_9 => imgui::Key::Keypad9,
+        Scancode::_0 => imgui::Key::Keypad0,
         Scancode::Return => imgui::Key::Enter, // TODO: Should this be treated as alias?
         Scancode::Escape => imgui::Key::Escape,
         Scancode::Backspace => imgui::Key::Backspace,
@@ -369,7 +369,7 @@ fn handle_key_modifier(io: &mut Io, keymod: &Mod) {
     );
 }
 
-/// Map an imgui::MouseCursor to an equivalent sdl2::mouse::SystemCursor.
+/// Map an imgui::MouseCursor to an equivalent sdl3::mouse::SystemCursor.
 fn to_sdl_cursor(cursor: MouseCursor) -> SystemCursor {
     match cursor {
         MouseCursor::Arrow => SystemCursor::Arrow,
