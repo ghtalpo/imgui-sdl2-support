@@ -3,7 +3,7 @@ use imgui_glow_renderer::{
     glow::{self, HasContext},
     AutoRenderer,
 };
-use imgui_sdl2_support::SdlPlatform;
+use imgui_sdl3_support::SdlPlatform;
 use sdl3::{
     event::Event,
     video::{GLProfile, Window},
