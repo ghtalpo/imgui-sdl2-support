@@ -1,6 +1,6 @@
-# imgui-sdl2-support
+# imgui-sdl3-support
 
-This crate provides an SDL2 based backend platform for imgui-rs.
+This crate provides an SDL3 based backend platform for imgui-rs.
 
 A backend platform handles window/input device events and manages their
 state.
