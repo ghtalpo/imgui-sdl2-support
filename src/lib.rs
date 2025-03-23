@@ -10,7 +10,7 @@ use sdl3::{
     keyboard::{Mod, Scancode},
     mouse::{Cursor, MouseState, SystemCursor},
     video::Window,
-    EventPump,
+    EventPump, Sdl,
 };
 
 /// sdl3 backend platform state.
@@ -125,6 +125,7 @@ impl SdlPlatform {
     /// * changes mouse cursor icon (if requested by imgui-rs)
     pub fn prepare_frame(
         &mut self,
+        sdl: &mut Sdl,
         context: &mut Context,
         window: &Window,
         event_pump: &EventPump,
@@ -152,7 +153,7 @@ impl SdlPlatform {
 
         // Set mouse position if requested by imgui-rs
         if io.want_set_mouse_pos {
-            let mouse_util = window.subsystem().sdl().mouse();
+            let mouse_util = sdl.mouse();
             mouse_util.warp_mouse_in_window(window, io.mouse_pos[0], io.mouse_pos[1]);
         }
 
@@ -164,7 +165,7 @@ impl SdlPlatform {
             .config_flags
             .contains(ConfigFlags::NO_MOUSE_CURSOR_CHANGE)
         {
-            let mouse_util = window.subsystem().sdl().mouse();
+            let mouse_util = sdl.mouse();
 
             match mouse_cursor {
                 Some(mouse_cursor) if !io.mouse_draw_cursor => {

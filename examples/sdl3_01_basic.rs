@@ -26,7 +26,7 @@ fn glow_context(window: &Window) -> glow::Context {
 
 fn main() {
     /* initialize SDL and its video subsystem */
-    let sdl = sdl3::init().unwrap();
+    let mut sdl = sdl3::init().unwrap();
     let video_subsystem = sdl.video().unwrap();
 
     /* hint SDL to initialize an OpenGL 3.3 core profile context */
@@ -85,7 +85,7 @@ fn main() {
         }
 
         /* call prepare_frame before calling imgui.new_frame() */
-        platform.prepare_frame(&mut imgui, &window, &event_pump);
+        platform.prepare_frame(&mut sdl, &mut imgui, &window, &event_pump);
 
         let ui = imgui.new_frame();
         /* create imgui UI here */
